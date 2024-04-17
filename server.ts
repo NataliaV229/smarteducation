@@ -5,6 +5,10 @@ import { ChatProtoGrpcType } from "./proto/chat";
 import { ChatRequest } from "./proto/chatPackage/ChatRequest";
 import { ChatResponse } from "./proto/chatPackage/ChatResponse";
 import { ChatStreamHandlers } from "./proto/chatPackage/ChatStream";
+import { ConnectionProtoGrpcType } from "./proto/connection";
+import { ConnectionHandlers } from "./proto/connectionPackage/Connection";
+import { CountProtoGrpcType } from "./proto/count";
+import { CountHandlers } from "./proto/countPackage/Count";
 
 const PORT = 5050;
 const chatPackageDef = protoLoader.loadSync(
@@ -14,6 +18,22 @@ const grpcChatObj = grpc.loadPackageDefinition(
   chatPackageDef
 ) as unknown as ChatProtoGrpcType;
 const chatPackage = grpcChatObj.chatPackage;
+
+const connectionPackageDef = protoLoader.loadSync(
+  path.resolve(__dirname, "./proto/connection.proto")
+);
+const grpcIdObj = grpc.loadPackageDefinition(
+  connectionPackageDef
+) as unknown as ConnectionProtoGrpcType;
+const connectionPackage = grpcIdObj.connectionPackage;
+
+const countPackageDef = protoLoader.loadSync(
+  path.resolve(__dirname, "./proto/count.proto")
+);
+const grpcCountObj = grpc.loadPackageDefinition(
+  countPackageDef
+) as unknown as CountProtoGrpcType;
+const countPackage = grpcCountObj.countPackage;
 
 function main() {
   const server = getServer();
@@ -37,17 +57,43 @@ const callObjByUsername = new Map<
 
 function getServer() {
   const server = new grpc.Server();
+  server.addService(connectionPackage.Connection.service, {
+    GetConnected: (req: any, res: any) => {
+      console.log(req.request);
+      res(null, { message: "Server connected successfully!" });
+    },
+  } as ConnectionHandlers);
+  server.addService(countPackage.Count.service, {
+    CountFunction: (call) => {
+      const { lessonLength = 60 } = call.request;
+      // console.log({lessonLength})
+
+      let onlineTime = 0;
+      let timeTillBreak = lessonLength;
+      const timer = setInterval(() => {
+        onlineTime = onlineTime + 10;
+        timeTillBreak = lessonLength - onlineTime;
+        call.write({ num: Math.floor(lessonLength - onlineTime) });
+
+        if (timeTillBreak <= 0) {
+          clearInterval(timer);
+          call.end();
+        }
+        console.log(`Lesson will end in ${timeTillBreak} minutes`);
+      }, 10 * 60 * 1000);
+    },
+  } as CountHandlers);
   server.addService(chatPackage.ChatStream.service, {
     Chat: (call) => {
       call.on("data", (req) => {
         const username = call.metadata.get("username")[0] as string;
         const msg = req.message;
-        console.log(username, req.message);
+        console.log(`${username}: ${msg}`);
 
         for (let [user, usersCall] of callObjByUsername) {
           if (username !== user) {
             usersCall.write({
-              username: username,
+              username: username + ":",
               message: msg,
             });
           }
@@ -64,14 +110,14 @@ function getServer() {
         for (let [user, usersCall] of callObjByUsername) {
           usersCall.write({
             username: username,
-            message: `Has Left the Chat! ${user}`,
+            message: `${user} has left the classroom`,
           });
         }
-        console.log(`${username} is ending their chat session`);
+        console.log(`${username} has left the classroom`);
 
         call.write({
-          username: "Server",
-          message: `See you later ${username}`,
+          username: "-",
+          message: `Good bye ${username}!`,
         });
 
         call.end();

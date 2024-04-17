@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package countPackage;
+
+service Count {
+  // Server-side streaming RPC
+  rpc CountFunction(CountRequest) returns (stream CountResponse) {};
+}
+
+message CountRequest {
+  int32 maxVal = 1;
+}
+
+message CountResponse {
+  int32 num = 1;
+}
