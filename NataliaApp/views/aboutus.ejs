@@ -1,0 +1,123 @@
+<%- include partials/header.ejs %>
+
+<head>
+  <body>
+    <br>
+
+<div id="container">
+  <p>Guess the Number to win a Free Ticket for the Match!</p>
+  <p id="outputText">Number between 1 and 100</p>
+  <input id="userInput" />
+  <button id="enterButton">Enter</button>
+  <button id="againButton">Play again</button>
+</div>
+<br />
+<div id="text">
+
+<p>
+  The association has many stadiums scattered throughout Ireland and
+  beyond. Every county and nearly all clubs have grounds, with varying
+  capacities and utilities, where they play their home games. The
+  hierarchical structure of the GAA is applied to the use of grounds.
+  Clubs play at their own grounds for the early rounds of the club
+  championship, while the latter rounds from quarter-finals to finals
+  are usually held at a county ground, i.e. the ground where
+  inter-county games take place or where the county board is based.
+  The provincial championship finals are usually played at the same
+  venue every year. However, there have been exceptions, such as in
+  Ulster, where in 2004 and 2005 the Ulster Football Finals were
+  played in Croke Park, as the anticipated attendance was likely to
+  far exceed the capacity of the traditional venue of St Tiernach's
+  Park, Clones. Croke Park is the association's flagship venue and is
+  known colloquially as Croker or Headquarters, since the venue
+  doubles as the association's base. With a capacity of 82,300, it
+  ranks among the top five stadiums in Europe by capacity, having
+  undergone extensive renovations for most of the 1990s and early 21st
+  century. Every September, Croke Park hosts the All-Ireland
+  inter-county Hurling and Football Finals as the conclusion to the
+  summer championships. Croke Park holds the All-Ireland club football
+  and hurling finals. Croke Park is named after Archbishop Thomas
+  Croke, who was elected as a patron of the GAA during the formation
+  of the GAA in 1884. The Croke Park campus is also home to the
+  National Handball Centre, which replaced the old Croke Park Handball
+  Centre built in the 1970s. The centre is due to be the home of GAA
+  Handball and to play host to All-Ireland Gaelic Handball finals.
+</p>
+</div>
+</head>
+
+<script>
+  var enterButton = document.getElementById("enterButton");
+  var againButton = document.getElementById("againButton");
+  var output = document.getElementById("outputText");
+
+  var randomNumber = Math.ceil(Math.random() * 100);
+
+  function checkNumber() {
+    var input = document.getElementById("userInput").value;
+    if (input == randomNumber) {
+      output.innerHTML =
+        "Congratulations " +
+        ", " +
+        "the number is " +
+        randomNumber +
+        " You won a free GAA Ticket ";
+      output.style.color = "green";
+    } else if (input > randomNumber && input < 100) {
+      output.innerHTML = "Too HIGH";
+    } else if (input < randomNumber && input > 1) {
+      output.innerHTML = "Too LOW";
+    } else if (input < 1) {
+      output.innerHTML = "Higher, the number should be between 1 and 100";
+    } else if (isNaN(input)) {
+      output.innerHTML = "That's not a Number";
+    } else {
+      output.innerHTML = "Lower, the number should be between 1 and 100";
+    }
+  }
+
+  enterButton.addEventListener("click", checkNumber);
+  againButton.addEventListener("click", function () {
+    location.reload();
+  });
+</script>
+
+<style>
+
+  body{
+    background: url(https://media.istockphoto.com/id/1315935881/photo/explosion-of-gold-coins-with-dollar-sign-on-white-background.webp?s=2048x2048&w=is&k=20&c=NIcxoaL9Lq4eqwzIUPBgbAtDJAZXk-Q3o5XXJc8SUfo=);
+  }
+  #text{
+    margin: 50;
+    padding:40px ;
+    text-align: center;
+    
+  }
+  /*-------game--------*/
+#container {
+  margin: auto;
+  border: 5px solid rgb(56, 54, 54);
+  font-size: 30px;
+  padding: 10px;
+  text-align: center;
+  text-shadow: 2px 2px rgb(224, 222, 106);
+
+  width: 100vw;
+  background-color: rgb(244, 241, 242);
+}
+p {
+  color: rgb(36, 32, 32);
+}
+#userInput {
+  width: 170px;
+}
+#outputText {
+  color: rgb(9, 0, 0);
+}
+/*----------------*/
+
+</style>
+
+
+
+<%- include partials/footer.ejs %>

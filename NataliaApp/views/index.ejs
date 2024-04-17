@@ -1,0 +1,156 @@
+<%- include partials/header.ejs %>
+
+<style>
+  body {
+    background-image: url(https://images.unsplash.com/photo-1644952354935-0bc0d25a9996?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+  }
+
+  .mycontainer {
+    display: flex;
+  }
+  .mycontainer > div {
+    width: 33%;
+    padding: 5%;
+  }
+  .mytitle {
+    margin-inline: auto;
+    width: 250px;
+    padding: 5%;
+  }
+
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    color: #060f0a;
+  }
+
+  td,
+  th {
+    border: 5px solid #60a072;
+    text-align: left;
+    padding: 8px;
+    height: 70px;
+  }
+
+  tr:nth-child(even) {
+    background-color: #d9e2db;
+  }
+  h2 {
+    text-align: center;
+  }
+  p {
+    text-align: center;
+  }
+</style>
+<img
+  src="https://plus.unsplash.com/premium_photo-1684713510655-e6e31536168d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  height="350"
+  width="2000"
+/>
+
+<div class="jumbotron">
+  <h1 class="display-4">Gaelic Athletic Association</h1>
+  <p class="lead">Matches Results Tables</p>
+  <hr class="my-4" />
+  <p></p>
+ 
+    <a
+      class="btn btn-success btn-lg"
+      href="https://www.gaa.ie/fixtures-results"
+      role="button"
+      >Learn more</a
+    >
+  </class>
+</div>
+
+<h2>Gaelic Athletic Association</h2>
+<p>
+  Our purpose is to promote Gaelic games, culture and lifelong participation as
+  a community-based, volunteer-led organisation which enriches lives and
+  communities. We are dedicated to ensuring that our games and values enrich the
+  lives of our members, families, and the communities we serve. At the behest of
+  Michael Cusack seven men met in Hayes Hotel, Thurles on November 1, 1884 and
+  founded the Gaelic Athletic Association for the preservation and cultivation
+  of our national pastimes..
+</p>
+
+<br />
+
+<div class="mycontainer">
+  <div style="background-color: #b0dab6">
+    <h2>Club Tickets Sale</h2>
+    <p>Take payments securely online, no Fees with your MetaMask Wallet</p>
+    <a href="connectwallet">GAA Tickets on Sale Now</a>
+  </div>
+
+  <div style="background-color: #b0e3be">
+    <h2>GAA Sport Accommodation</h2>
+    <p>
+      Entirely funded by GAA Sports Lottery. As a Lottery member the
+      accommodation is available. For further information contact via mail
+      gaalottery@gmail.com
+    </p>
+    <a href="contactus">Bookings</a>
+  </div>
+
+  <div style="background-color: #afd7b4">
+    <h2>Win Your Ticket!!</h2>
+    <p>
+      Any club who sells a minimum of 200 tickets automatically goes into a draw
+      to win €1000....very simply you just have to play! Good Luck
+    </p>
+    <a href="aboutus"
+      >Win The Ticket</a
+    >
+  </div>
+</div>
+<br />
+<h2>Recent Lotto Draws</h2>
+<div class="mytitle">
+  <table style="width: 100%">
+    <tr>
+      <th>Date</th>
+      <th>Numbers</th>
+      <th>Winner</th>
+      <th>Jackpot</th>
+    </tr>
+
+    <tr>
+      <td>28/02/2024</td>
+      <td>4,25,16,23</td>
+      <td>No winner</td>
+      <td>€2150</td>
+    </tr>
+
+    <tr>
+      <td>06/02/2024</td>
+      <td>2,12,14,22</td>
+      <td>No Winner</td>
+      <td>€2000</td>
+    </tr>
+
+    <tr>
+      <td>29/03/2024</td>
+      <td>3,9,10,16</td>
+      <td>No Winner</td>
+      <td>€2000</td>
+    </tr>
+
+    <tr>
+      <td>22/03/2024</td>
+      <td>1,20,22,24</td>
+      <td>Ana Shannon and Bill Gates</td>
+      <td>€9800</td>
+    </tr>
+
+    <tr>
+      <td>15/01/2024</td>
+      <td>4,16,17,23</td>
+      <td>No Winner</td>
+      <td>€9650</td>
+    </tr>
+  </table>
+</div>
+
+<%- include partials/footer.ejs %>
