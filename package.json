@@ -1,0 +1,28 @@
+{
+  "name": "smartclassroom",
+  "version": "1.0.0",
+  "description": "\\# smartclassroom\r set of protocols messages and implementation that simulates the operations of smart automated environment\r example",
+  "main": "index.js",
+  "scripts": {
+    "client": "ts-node client",
+    "server": "ts-node server",
+    "gen-proto": "npx proto-loader-gen-types --grpcLib=@grpc/grpc-js --outDir=proto/ proto/chat.proto"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NataliaV229/smarteducation.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NataliaV229/smarteducation/issues"
+  },
+  "homepage": "https://github.com/NataliaV229/smarteducation#readme",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.10.6",
+    "@grpc/proto-loader": "^0.7.12",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
