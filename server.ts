@@ -9,16 +9,14 @@ import { ConnectionProtoGrpcType } from "./proto/connection";
 import { ConnectionHandlers } from "./proto/connectionPackage/Connection";
 import { CountProtoGrpcType } from "./proto/count";
 import { CountHandlers } from "./proto/countPackage/Count";
+import { SubjectProtoGrpcType } from "./proto/subject";
+import { SetSubjectHandlers } from "./proto/subjectPackage/SetSubject";
+import { SubjectRequest } from "./proto/subjectPackage/SubjectRequest";
+import { SubjectResponse } from "./proto/subjectPackage/SubjectResponse";
 
 const PORT = 5050;
-const chatPackageDef = protoLoader.loadSync(
-  path.resolve(__dirname, "./proto/chat.proto")
-);
-const grpcChatObj = grpc.loadPackageDefinition(
-  chatPackageDef
-) as unknown as ChatProtoGrpcType;
-const chatPackage = grpcChatObj.chatPackage;
 
+// connection def
 const connectionPackageDef = protoLoader.loadSync(
   path.resolve(__dirname, "./proto/connection.proto")
 );
@@ -27,6 +25,7 @@ const grpcIdObj = grpc.loadPackageDefinition(
 ) as unknown as ConnectionProtoGrpcType;
 const connectionPackage = grpcIdObj.connectionPackage;
 
+// count def
 const countPackageDef = protoLoader.loadSync(
   path.resolve(__dirname, "./proto/count.proto")
 );
@@ -34,6 +33,24 @@ const grpcCountObj = grpc.loadPackageDefinition(
   countPackageDef
 ) as unknown as CountProtoGrpcType;
 const countPackage = grpcCountObj.countPackage;
+
+// chat def
+const chatPackageDef = protoLoader.loadSync(
+  path.resolve(__dirname, "./proto/chat.proto")
+);
+const grpcChatObj = grpc.loadPackageDefinition(
+  chatPackageDef
+) as unknown as ChatProtoGrpcType;
+const chatPackage = grpcChatObj.chatPackage;
+
+// subject def
+const subjectPackageDef = protoLoader.loadSync(
+  path.resolve(__dirname, "./proto/subject.proto")
+);
+const grpcSimpleObj = grpc.loadPackageDefinition(
+  subjectPackageDef
+) as unknown as SubjectProtoGrpcType;
+const subjectPackage = grpcSimpleObj.subjectPackage;
 
 function main() {
   const server = getServer();
@@ -55,19 +72,21 @@ const callObjByUsername = new Map<
   grpc.ServerDuplexStream<ChatRequest, ChatResponse>
 >();
 
+const allSubjects: SubjectResponse = { subjects: [] };
+
 function getServer() {
   const server = new grpc.Server();
+
   server.addService(connectionPackage.Connection.service, {
     GetConnected: (req: any, res: any) => {
       console.log(req.request);
       res(null, { message: "Server connected successfully!" });
     },
   } as ConnectionHandlers);
+
   server.addService(countPackage.Count.service, {
     CountFunction: (call) => {
-      const { lessonLength = 60 } = call.request;
-      // console.log({lessonLength})
-
+      const lessonLength = 60;
       let onlineTime = 0;
       let timeTillBreak = lessonLength;
       const timer = setInterval(() => {
@@ -83,6 +102,20 @@ function getServer() {
       }, 10 * 60 * 1000);
     },
   } as CountHandlers);
+
+  server.addService(subjectPackage.SetSubject.service, {
+    Subjects: (call, callback) => {
+      call.on("data", (subjectInput: SubjectRequest) => {
+        allSubjects.subjects?.push(subjectInput);
+        console.log(subjectInput);
+      });
+
+      call.on("end", () => {
+        callback(null, { subjects: allSubjects.subjects });
+      });
+    },
+  } as SetSubjectHandlers);
+
   server.addService(chatPackage.ChatStream.service, {
     Chat: (call) => {
       call.on("data", (req) => {
@@ -110,7 +143,7 @@ function getServer() {
         for (let [user, usersCall] of callObjByUsername) {
           usersCall.write({
             username: username,
-            message: `${user} has left the classroom`,
+            message: `has left the classroom`,
           });
         }
         console.log(`${username} has left the classroom`);
