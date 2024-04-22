@@ -6,7 +6,10 @@
   "scripts": {
     "client": "ts-node client",
     "server": "ts-node server",
-    "gen-proto": "npx proto-loader-gen-types --grpcLib=@grpc/grpc-js --outDir=proto/ proto/chat.proto"
+    "gen-proto": "npx proto-loader-gen-types --grpcLib=@grpc/grpc-js --outDir=proto/ proto/chat.proto",
+    "gen-connection": "npx proto-loader-gen-types --grpcLib=@grpc/grpc-js --outDir=proto/ proto/connection.proto",
+    "gen-count": "npx proto-loader-gen-types --grpcLib=@grpc/grpc-js --outDir=proto/ proto/count.proto",
+    "gen-subject": "npx proto-loader-gen-types --grpcLib=@grpc/grpc-js --outDir=proto/ proto/subject.proto"
   },
   "repository": {
     "type": "git",

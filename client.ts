@@ -5,6 +5,7 @@ import readline from "readline";
 import { ChatProtoGrpcType } from "./proto/chat";
 import { ConnectionProtoGrpcType } from "./proto/connection";
 import { CountProtoGrpcType } from "./proto/count";
+import { SubjectProtoGrpcType } from "./proto/subject";
 
 const PORT = 5050;
 const chatPackageDef = protoLoader.loadSync(
@@ -25,6 +26,12 @@ const countPackageDef = protoLoader.loadSync(
 const grpcCountObj = grpc.loadPackageDefinition(
   countPackageDef
 ) as unknown as CountProtoGrpcType;
+const subjectPackageDef = protoLoader.loadSync(
+  path.resolve(__dirname, "./proto/subject.proto")
+);
+const grpcSubjectObj = grpc.loadPackageDefinition(
+  subjectPackageDef
+) as unknown as SubjectProtoGrpcType;
 
 const client1 = new grpcConnectionObj.connectionPackage.Connection(
   `0.0.0.0:${PORT}`,
@@ -34,7 +41,10 @@ const client2 = new grpcCountObj.countPackage.Count(
   `0.0.0.0:${PORT}`,
   grpc.credentials.createInsecure()
 );
-
+const client3 = new grpcSubjectObj.subjectPackage.SetSubject(
+  `0.0.0.0:${PORT}`,
+  grpc.credentials.createInsecure()
+);
 const client4 = new grpcChatObj.chatPackage.ChatStream(
   `0.0.0.0:${PORT}`,
   grpc.credentials.createInsecure()
@@ -59,18 +69,30 @@ function onClientReady() {
         return;
       }
       console.log(result);
+      console.log(
+        `Write a message in classroom chat or send today's subject to server by "subject: your_subject"`
+      );
     }
   );
 
-  const stream1 = client2.CountFunction({ lessonLength: 60 });
-  stream1.on("data", (chunk) => {
-    console.log(`Lesson will end in ${chunk.num} minutes`);
-  });
-  stream1.on("end", () => {
-    console.log("Lesson finished!");
+  // const stream1 = client2.CountFunction({ lessonLength: 60 });
+  // stream1.on("data", (chunk) => {
+  //   console.log(`Lesson will end in ${chunk.num} minutes`);
+  // });
+  // stream1.on("end", () => {
+  //   console.log("Lesson finished!");
+  // });
+
+  const stream2 = client3.Subjects((err, result) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log("Subjects list has been finished with next results:");
+    console.log(result);
   });
 
-  const rl = readline.createInterface({
+  const commandInput = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
@@ -85,15 +107,23 @@ function onClientReady() {
   console.log("metadata.getMap", metadata.getMap);
 
   call.write({
-    message: "has joined the classroom",
+    message: "Just joined the classroom",
   });
 
-  call.on("data", (chunk) => {
-    console.log(`${chunk.username} ${chunk.message}`);
+  call.on("data", (data) => {
+    console.log(`${data.username} ${data.message}`);
   });
 
-  rl.on("line", (line) => {
-    if (line === "bye") {
+  commandInput.on("line", (line) => {
+    if (line.startsWith("subject:")) {
+      stream2.write({
+        subject: line.substring("subject:".length),
+        student: username,
+      });
+      console.log("-- Subject sent successfully! --");
+    } else if (line === "end-subjects-list") {
+      stream2.end();
+    } else if (line === "bye") {
       call.end();
     } else {
       call.write({
@@ -102,3 +132,5 @@ function onClientReady() {
     }
   });
 }
+
+// client1.ts
