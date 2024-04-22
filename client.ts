@@ -132,3 +132,5 @@ function onClientReady() {
     }
   });
 }
+
+// client1.ts

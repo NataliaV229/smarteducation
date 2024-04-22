@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package subjectPackage;
+
+service SetSubject {
+  // Client-side streaming RPC
+  rpc Subjects(stream SubjectRequest) returns (SubjectResponse) {};
+}
+
+message SubjectRequest {
+  string subject = 1;
+  string student = 2;
+}
+
+message SubjectResponse {
+  repeated SubjectRequest subjects = 1;
+}

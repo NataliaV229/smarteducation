@@ -53,16 +53,20 @@ const grpcSimpleObj = grpc.loadPackageDefinition(
 const subjectPackage = grpcSimpleObj.subjectPackage;
 
 function main() {
+  // get a gRPC server instance by calling the getServer function
   const server = getServer();
+  // bind the server to the specified address and port
   server.bindAsync(
     `0.0.0.0:${PORT}`,
+    // use insecure server credentials
     grpc.ServerCredentials.createInsecure(),
     (err, port) => {
+      //cechk for errors
       if (err) {
-        console.error(err);
-        return;
+        console.error(err); //log the error to console
+        return; //return if any error
       }
-      console.log(`Server started on port http://0.0.0.0:${port}`);
+      console.log(`Server started on port http://0.0.0.0:${port}`); //server successfully started
     }
   );
 }
@@ -162,3 +166,5 @@ function getServer() {
 }
 
 main();
+
+// server.ts
